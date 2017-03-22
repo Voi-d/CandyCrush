@@ -6,12 +6,12 @@ public class Candy : MonoBehaviour {
 
 	public int rowIndex = 0;
 	public int columnIndex = 0;
-	public float xOff = -4.5f;
+	public float xoff = -4.5f;
 	public float yoff = -3f;
 
 	public GameObject[] bgs;
 	private GameObject bg;
-
+	public int candyTypeNum = 6;	//control the game difficult
 	public int type;
 
 	public GameController game;
@@ -30,7 +30,7 @@ public class Candy : MonoBehaviour {
 		if (bg != null) {
 			return;
 		}
-		type = Random.Range (0, bgs.Length);
+		type = Random.Range (0, Mathf.Min(candyTypeNum, bgs.Length));
 		bg = (GameObject)Instantiate (bgs[type]);
 		bg.transform.parent = this.transform;
 	}
@@ -44,7 +44,13 @@ public class Candy : MonoBehaviour {
 		
 		AddRandomBG ();
 
-		transform.position = new Vector3 (columnIndex + xOff, rowIndex + yoff, 0f);
+		transform.position = new Vector3 (columnIndex + xoff, rowIndex + yoff, 0f);
+	}
+
+	//move slowly to the appropriate location
+	public void TweenToPosition(){
+		AddRandomBG ();
+		iTween.MoveTo (this.gameObject, iTween.Hash("x", columnIndex + xoff, "y", rowIndex + yoff, "time", 0.3f));
 	}
 
 	public void Dispose(){
