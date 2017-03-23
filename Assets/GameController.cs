@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour {
 	public AudioClip swapClip;
 	public AudioClip explodeClip;
 	public AudioClip match3Clip;
+	public AudioClip wrongClip;
 
 	private ArrayList candyArr;
 	private ArrayList matches;
@@ -80,13 +81,16 @@ public class GameController : MonoBehaviour {
 
 		if (crt == null) {	//first click
 			crt = c;	//save 
+			crt.selected = true;
 			return;
 		} else {		//second click 
 			//exchange conditions
-			if(1 == (Mathf.Abs(crt.rowIndex - c.rowIndex) + Mathf.Abs(crt.columnIndex - c.columnIndex))){
+			if (1 == (Mathf.Abs (crt.rowIndex - c.rowIndex) + Mathf.Abs (crt.columnIndex - c.columnIndex))) {
 				StartCoroutine (ExchangeThread (crt, c)); 
+			} else {
+				StartCoroutine (PlaySoundThread(wrongClip)); 
 			}
-
+			crt.selected = false; 
 			crt = null;	//set the first candy to null
 		}
 	}
@@ -159,7 +163,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	IEnumerator PlaySoundThread(AudioClip ac){
-		yield return new WaitForSeconds(0.0f);
+		yield return new WaitForSeconds(0);
 		this.GetComponent<AudioSource> ().PlayOneShot(ac);
 	}
 
@@ -241,6 +245,11 @@ public class GameController : MonoBehaviour {
 		matches = new ArrayList ();
 
 		//recursive call
+		StartCoroutine(WaitAndCheck());
+	}
+
+	IEnumerator WaitAndCheck(){
+		yield return new WaitForSeconds(0.5f);
 		if (CheckMatches()) {
 			RemoveMatches ();
 		}

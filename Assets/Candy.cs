@@ -16,6 +16,18 @@ public class Candy : MonoBehaviour {
 
 	public GameController game;
 
+	private SpriteRenderer sr;
+
+
+	//change color when selected
+	public bool selected{
+		set{
+			if(sr != null){
+				sr.color = value ? Color.grey : Color.white;
+			}
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -33,13 +45,15 @@ public class Candy : MonoBehaviour {
 		type = Random.Range (0, Mathf.Min(candyTypeNum, bgs.Length));
 		bg = (GameObject)Instantiate (bgs[type]);
 		bg.transform.parent = this.transform;
+
+		sr = bg.GetComponent<SpriteRenderer> ();
 	}
 
 	void OnMouseDown(){
 		//Debug.Log ("type:" + type);
 		game.Select(this);
 	}
-
+		
 	public void UpdatePosition(){
 		
 		AddRandomBG ();
